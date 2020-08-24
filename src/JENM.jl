@@ -4,6 +4,8 @@ using NearestNeighbors
 using BioStructures
 using PROPACK
 using LinearAlgebra
+include("network_models.jl")
+
 
 function get_calpha_atoms(ps::ProteinStructure;chain::String="A",model::Int64=1)::Array{AbstractAtom,1}
     cαs = collectatoms(ps[model][chain], calphaselector)
@@ -20,8 +22,8 @@ function get_calpha_atoms(ps::ProteinStructure; chains::Array{String,1}=["A"],mo
     return cαs
 end
 
-function get_calpha_coords(cαs::Array{AbstractAtom,1})::Array{Float64,2}
-    cα_coords = cαs .|> coords |> (x) -> hcat(x...)
+function get_coords(atoms::Array{AbstractAtom,1})::Array{Float64,2}
+    atom_coords = atoms .|> coords |> (x) -> hcat(x...)
 end
 
 function find_neighbors(cα_coords::Array{Float64,2}; radius::Float64=10.)::Array{Array{Int64,1},1}
