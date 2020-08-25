@@ -46,6 +46,11 @@ function GNM(Cα_coords::Array{Float64,2}; radius::Float64=7.3)
     return gnm
 end
 
+function GNM(ps::ProteinStructure; radius::Float64=7.3)
+    Cα_coords = collectatoms(ps,calphaselector) |> get_coords
+    gnm = GNM(Cα_coords; radius=radius)
+end
+
 function get_Hij(p1::Array{Float64,1}, p2::Array{Float64,1}, γ::Float64)::Array{Float64,2}
     if all(p1 == p2)
         return zeros(3, 3)
