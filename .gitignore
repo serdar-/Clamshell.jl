@@ -1,0 +1,5 @@
+build/
+docs/build/
+test/test.html
+test/test.jl
+test/3Dmol.js
