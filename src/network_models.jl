@@ -3,6 +3,11 @@ using LinearAlgebra
 
 include("utils.jl")
 
+"""
+    AbstractNetworkModel
+
+Abstract type used for defining network models. 
+"""
 abstract type AbstractNetworkModel end
 
 struct GaussianNetworkModel <: AbstractNetworkModel
@@ -51,6 +56,9 @@ function GNM(ps::ProteinStructure; radius::Float64=7.3)
     gnm = GNM(Cα_coords; radius=radius)
 end
 
+# To get hinges:
+# corspearman(gnm.eigvecs[:,2]*gnm.eigvecs[:,2]'./gnm.eigvals[2])
+
 function get_Hij(p1::Array{Float64,1}, p2::Array{Float64,1}, γ::Float64)::Array{Float64,2}
     if all(p1 == p2)
         return zeros(3, 3)
@@ -75,4 +83,48 @@ function build_Hessian_matrix(Cα_coords::Array{Float64,2}; radius::Float64=15.0
         hessian[ind[:,i],ind[:,i]] = -sum(row, dims=3) 
     end
     return hessian
+end
+
+function ANM(Cα_coords::Array{Float64,2}; radius::Float64=15.0, γ::Float64=1.)::AnisotropicNetworkModel
+    hessian = build_Hessian_matrix(Cα_coords; radius=radius, γ=γ)
+    λ,Q = eigen(hessian)
+    anm = AnisotropicNetworkModel(γ,radius,Cα_coords,λ,Q,hessian)
+    
+end
+
+"""
+    eigvals(nm::AbstractNetworkModel; n_mods::Int64=20)
+
+Returns the eigenvalues calculated from the relevant elastic network model. 
+"""
+function eigvals(nm::AbstractNetworkModel; n_mods::Int64=20)::Array{Float64,1}
+    if isa(nm,GaussianNetworkModel)
+        if n_mods == -1
+            return nm.eigvals[2:end]
+        else
+            return nm.eigvals[2:n_mods+1]
+        end
+    else
+        if n_mods == -1
+            return nm.eigvals[7:end]
+        else
+            return nm.eigvals[7:n_mods+6]
+        end
+    end
+end
+
+function eigvecs(nm::AbstractNetworkModel; n_mods::Int64=20)::Array{Float64,2}
+    if isa(nm,GaussianNetworkModel)
+        if n_mods == -1
+            return nm.eigvecs[:,2:end]
+        else
+            return nm.eigvecs[:,2:n_mods+1]
+        end
+    else
+        if n_mods == -1
+            return nm.eigvecs[:,7:end]
+        else
+            return nm.eigvals[:,7:n_mods+6]
+        end
+    end
 end
