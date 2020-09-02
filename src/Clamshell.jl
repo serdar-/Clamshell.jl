@@ -1,6 +1,5 @@
 module Clamshell
 
-include("network_models.jl")
 
 export AbstractNetworkModel,
        AnisotropicNetworkModel,
@@ -8,5 +7,10 @@ export AbstractNetworkModel,
        GNM,
        ANM,
        eigvals,
-       eigvecs
+       eigvecs,
+       get_calpha_coords,
+       mode_correlations
+
+include("network_models.jl")
+
 end
