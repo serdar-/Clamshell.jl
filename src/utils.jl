@@ -1,4 +1,9 @@
-using BioStructures: ProteinStructure, calphaselector, collectatoms, coords
+using BioStructures: ProteinStructure, 
+                     calphaselector, 
+                     collectatoms, 
+                     coords, 
+                     AbstractAtom, 
+                     Atom
 
 function get_calpha_atoms(ps::ProteinStructure;chain::String="A",model::Int64=1)::Array{AbstractAtom,1}
     cαs = collectatoms(ps[model][chain], calphaselector)

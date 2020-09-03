@@ -1,6 +1,5 @@
 module Clamshell
 
-
 export AbstractNetworkModel,
        AnisotropicNetworkModel,
        GaussianNetworkModel,

@@ -143,3 +143,16 @@ function mode_correlations(gnm::GaussianNetworkModel, mode::Int64=1)::Array{Floa
     correlation = corspearman(q*q'./λ)
     return correlation
 end
+
+function get_hinge_index(gnm::GaussianNetworkModel)::Array{Int64,1}
+    hinges = Array{Int64,1}()
+    indices = mode_correlations(gnm, 1) |>
+                    (x) -> x[:,1] |>
+                    diff |>
+                    (x) -> findall(x .!= 0) |>
+                    (x) -> [x;x.+1] |>
+                    sort
+    push!(hinges,indices)
+    hinges
+end
+
