@@ -144,7 +144,7 @@ function mode_correlations(gnm::GaussianNetworkModel, mode::Int64=1)::Array{Floa
     return correlation
 end
 
-function get_hinge_index(gnm::GaussianNetworkModel)::Array{Int64,1}
+function get_hinge_indices(gnm::GaussianNetworkModel)::Array{Int64,1}
     hinges = Array{Int64,1}()
     indices = mode_correlations(gnm, 1) |>
                     (x) -> x[:,1] |>
@@ -152,7 +152,7 @@ function get_hinge_index(gnm::GaussianNetworkModel)::Array{Int64,1}
                     (x) -> findall(x .!= 0) |>
                     (x) -> [x;x.+1] |>
                     sort
-    push!(hinges,indices)
+    push!(hinges,indices...)
     hinges
 end
 

@@ -8,7 +8,8 @@ export AbstractNetworkModel,
        eigvals,
        eigvecs,
        get_calpha_coords,
-       mode_correlations
+       mode_correlations,
+       get_hinge_indices
 
 include("network_models.jl")
 
