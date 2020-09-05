@@ -222,11 +222,6 @@ git-tree-sha1 = "13a934b9e74a8722bf1786c989de346a9602e695"
 uuid = "b22a6f82-2f65-5046-a5b2-351ab43fb4e5"
 version = "4.3.1+2"
 
-[[FastClosures]]
-git-tree-sha1 = "acebe244d53ee1b461970f8910c235b259e772ef"
-uuid = "9aa1b823-49e4-5ca5-8b0f-3971ec8bab6a"
-version = "0.3.2"
-
 [[FileIO]]
 deps = ["Pkg"]
 git-tree-sha1 = "1e7e88a949b52e6f7f589041bd60928322414997"
@@ -396,12 +391,6 @@ version = "1.3.3"
 deps = ["Libdl"]
 uuid = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 
-[[LinearOperators]]
-deps = ["FastClosures", "LinearAlgebra", "Printf", "SparseArrays", "TimerOutputs"]
-git-tree-sha1 = "e622d4b9bc550042e851e83a12056dc2e28ce352"
-uuid = "5c8ed15e-5a4c-59e4-a42b-c7e8811fb125"
-version = "1.1.0"
-
 [[Logging]]
 uuid = "56ddb016-857b-54e1-b83d-db4d58db5568"
 
@@ -521,18 +510,6 @@ version = "1.3.1+2"
 git-tree-sha1 = "293b70ac1780f9584c89268a6e2a560d938a7065"
 uuid = "bac558e1-5e72-5ebc-8fee-abe8a469f55d"
 version = "1.3.0"
-
-[[PROPACK]]
-deps = ["LinearOperators", "PROPACK_jll"]
-git-tree-sha1 = "20acb364114c7ef94d8b35e37bff291285aba4e3"
-uuid = "b169e327-5944-5131-97a6-5d3d3f0a476a"
-version = "0.3.2"
-
-[[PROPACK_jll]]
-deps = ["Libdl", "OpenBLAS_jll", "Pkg"]
-git-tree-sha1 = "1769e838e1e618d3f76ed220ebc420dab6337bed"
-uuid = "2c99449f-f194-5e92-8ff0-13814ff41dcf"
-version = "0.1.0+1"
 
 [[Parsers]]
 deps = ["Dates", "Test"]
@@ -697,12 +674,6 @@ version = "1.0.5"
 [[Test]]
 deps = ["Distributed", "InteractiveUtils", "Logging", "Random"]
 uuid = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
-
-[[TimerOutputs]]
-deps = ["Printf"]
-git-tree-sha1 = "f458ca23ff80e46a630922c555d838303e4b9603"
-uuid = "a759f4b9-e2f1-59dc-863e-4aeb61b1ea8f"
-version = "0.5.6"
 
 [[TranscodingStreams]]
 deps = ["Random", "Test"]
