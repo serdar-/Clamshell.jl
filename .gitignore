@@ -2,4 +2,9 @@ build/
 docs/build/
 test/test.html
 test/test.jl
+test/test2.jl
+test/test3.jl
 test/3Dmol.js
+test/*.pdb
+src/js/
+.vscode/
