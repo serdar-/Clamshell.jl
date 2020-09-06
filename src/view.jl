@@ -1,7 +1,8 @@
+using JSExpr: @js
 
 CANVAS_ID::Int64 = 0
 
-function create_view_template(pdb_string::String,js::String)::String
+function create_view(pdb_string::String,js::String)::HTML{String}
     template = """
     <script src="http://3Dmol.csb.pitt.edu/build/3Dmol-min.js""></script>
     <div class="pdb_data" style="display:none;">$pdb_string</div>
@@ -14,6 +15,20 @@ function create_view_template(pdb_string::String,js::String)::String
         $js
     </script>
     """
-    return template
+    return HTML(template)
 end
+
+function set_style(style::Dict; selection::Dict=Dict())::String
+    # v.setStyle({},{cartoon:{color:"black"}});
+    selection_js = @js selection
+    style_js = @js style
+    style_string = """
+    v.setStyle($selection,$style_js);"""
+    return style_string
+end
+
+
+
+
+
 
