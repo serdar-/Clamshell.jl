@@ -148,7 +148,8 @@ end
 function get_hinge_indices(gnm::GaussianNetworkModel)::Array{Int64,1}
     hinges = Array{Int64,1}()
     indices = mode_correlations(gnm, 1) |>
-                    (x) -> x[:,1] |>
+                    (x) -> x[:,1] .|>
+                    round |>
                     diff |>
                     (x) -> findall(x .!= 0) |>
                     (x) -> [x;x.+1] |>
@@ -159,8 +160,8 @@ end
 
 function hinge_plane_normal(gnm::GaussianNetworkModel)::Array{Float64,1}
     corrs = mode_correlations(gnm,1) |> (x) -> x[:,1]
-    cₚ = findall(corrs .== 1.0)
-    cₙ = findall(corrs .== -1.0)
+    cₚ = findall(round.(corrs) .== 1.0)
+    cₙ = findall(round.(corrs) .== -1.0)
     ld = fit(LinearDiscriminant,ca_coords[:,cₚ],ca_coords[:,cₙ])
     return ld.w
 end
