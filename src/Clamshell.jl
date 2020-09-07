@@ -11,7 +11,8 @@ export AbstractNetworkModel,
        mode_correlations,
        get_hinge_indices,
        show_structure,
-       show_correlations
+       show_correlations,
+       show_network
 
 include("network_models.jl")
 include("view.jl")

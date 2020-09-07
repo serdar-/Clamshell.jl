@@ -102,7 +102,7 @@ function ANM(ps::ProteinStructure; radius::Float64=15.0, γ::Float64=1.)::Anisot
 end
 
 """
-    eigvals(nm::AbstractNetworkModel; n_modes::Int64=20)
+    eigvals(nm::AbstractNetworkModel; n_modes::Int64=20)::Array{Float64,1}
 
 Returns the eigenvalues calculated from the relevant elastic network model. 
 """

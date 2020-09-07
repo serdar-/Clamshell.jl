@@ -1,4 +1,5 @@
 using Base: IOBuffer
+using Printf
 using JSExpr: @js_str
 using BioStructures: ProteinStructure, 
                      collectatoms, 
@@ -20,7 +21,10 @@ function create_structure_view(pdb_string::String,js::String)::HTML{String}
         let config = { backgroundColor: '#fefcf5' };
         let v = \$3Dmol.createViewer( element, config );
         let data = \$(".pdb_data_$CANVAS_ID").html();
-        v.addModel( data, "pdb" );
+        let model;
+        if(data.length != 0){
+            model = v.addModel( data, "pdb" );
+        }
         $js
         v.zoomTo(); 
         v.render();
@@ -49,7 +53,7 @@ function set_style(style::Dict; selection::Dict=Dict())::String
     selection_js = js"$selection"
     style_js = js"$style"
     style_string = """
-    v.setStyle($selection_js,$style_js);"""
+    model.setStyle($selection_js,$style_js);"""
     return style_string
 end
 
@@ -70,10 +74,10 @@ function show_structure(ps::ProteinStructure;
     view = create_structure_view(pdb_string,style_string)
     return view
 end
-
+# Cα_coords
 function show_correlations(atoms::Array{AbstractAtom,1};mode::Int64=1,show_hinges::Bool=false)::HTML{String}
-    ca_coords = collectatoms(atoms, calphaselector) |> get_coords 
-    gnm = GNM(ca_coords) 
+    Cα_coords = get_calpha_coords(atoms)
+    gnm = GNM(Cα_coords) 
     corrs = mode_correlations(gnm,mode) |> (x) -> x[:,1]
     cₚ = findall(round.(corrs) .== 1.0) 
     cₙ = findall(round.(corrs) .== -1.0)
@@ -91,4 +95,34 @@ function show_correlations(atoms::Array{AbstractAtom,1};mode::Int64=1,show_hinge
     global CANVAS_ID += 1
     structure_view = create_structure_view(pdb_string,style_string)
     return structure_view
+end
+
+function show_network(atoms::Array{AbstractAtom,1};radius::Float64=7.3,show_structure::Bool=false)::HTML{String}
+    Cα_coords = get_calpha_coords(atoms)
+    neighbors = find_neighbors(Cα_coords;radius=radius);
+    if show_structure
+        pdb_string = create_pdb_string(atoms)
+        model_style = set_style(Dict("cartoon"=>Dict("color"=>"#5e7ad3")))
+    else
+        pdb_string = ""
+    end
+    shape = "let network = v.addShape(1, {color:'red'});"
+    N = size(Cα_coords)[2]
+    convert_coords = (x,i) -> Dict("x"=>x[1,i],"y"=>x[2,i],"z"=>x[3,i])
+    @inbounds for i = 1:N
+        @inbounds for j = neighbors[i]
+            if i != j
+                p_start = convert_coords(Cα_coords,i) |> (x) -> @sprintf("%s",js"$x")
+                p_end = convert_coords(Cα_coords,j) |> (x) -> @sprintf("%s",js"$x")
+                shape *= "network.addCylinder({start:$p_start,end:$p_end,radius:0.1,fromCap:2,toCap:2,color:'red',dashed:false});"
+            end
+        end
+    end
+    global CANVAS_ID += 1
+    if show_structure
+        network_view = create_structure_view(pdb_string,shape*model_style)
+    else
+        network_view = create_structure_view(pdb_string,shape)
+    end
+    return network_view
 end

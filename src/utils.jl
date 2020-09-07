@@ -27,3 +27,7 @@ end
 function get_calpha_coords(ps::ProteinStructure; chains::Array{String,1}=["A"],models::Array{Int64,1}=[1])::Array{Float64,2}
     return get_calpha_atoms(ps;chains=chains,models=models) |> get_coords
 end
+
+function get_calpha_coords(atoms::Array{AbstractAtom,1})::Array{Float64,2}
+    return collectatoms(atoms,calphaselector) |> get_coords
+end
