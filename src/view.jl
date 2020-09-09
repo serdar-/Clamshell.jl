@@ -105,6 +105,7 @@ function show_network(atoms::Array{AbstractAtom,1};radius::Float64=7.3,show_stru
         model_style = set_style(Dict("cartoon"=>Dict("color"=>"#5e7ad3")))
     else
         pdb_string = ""
+        model_style = ""
     end
     shape = "let network = v.addShape(1, {color:'red'});"
     N = size(Cα_coords)[2]
@@ -119,10 +120,19 @@ function show_network(atoms::Array{AbstractAtom,1};radius::Float64=7.3,show_stru
         end
     end
     global CANVAS_ID += 1
-    if show_structure
-        network_view = create_structure_view(pdb_string,shape*model_style)
-    else
-        network_view = create_structure_view(pdb_string,shape)
-    end
+    network_view = create_structure_view(pdb_string,shape*model_style)
     return network_view
+end
+
+function show_hinge_plane(atoms::Array{AbstractAtom,1};radius::Float64=7.3,show_structure::Bool=true)::HTML{String}
+    Cα_coords = get_calpha_coords(atoms)
+    gnm = GNM(Cα_coords;radius=radius)
+    n_vector = hinge_plane_normal(gnm) # Normal of hinge plane
+    if show_structure
+        pdb_string = create_pdb_string(atoms)
+        model_style = set_style(Dict("cartoon"=>Dict("color"=>"#5e7ad3")))
+    else
+        pdb_string = ""
+        model_style = ""
+    end
 end

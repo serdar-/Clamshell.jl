@@ -1,5 +1,8 @@
 module Clamshell
 
+include("network_models.jl")
+include("view.jl")
+
 export AbstractNetworkModel,
        AnisotropicNetworkModel,
        GaussianNetworkModel,
@@ -14,7 +17,5 @@ export AbstractNetworkModel,
        show_correlations,
        show_network
 
-include("network_models.jl")
-include("view.jl")
 
 end
