@@ -162,7 +162,7 @@ function hinge_plane_normal(gnm::GaussianNetworkModel)::Array{Float64,1}
     corrs = mode_correlations(gnm,1) |> (x) -> x[:,1]
     cₚ = findall(round.(corrs) .== 1.0)
     cₙ = findall(round.(corrs) .== -1.0)
-    ld = fit(LinearDiscriminant,ca_coords[:,cₚ],ca_coords[:,cₙ])
+    ld = fit(LinearDiscriminant,gnm.Cα_coords[:,cₚ],gnm.Cα_coords[:,cₙ])
     return ld.w
 end
 

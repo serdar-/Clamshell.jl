@@ -7,8 +7,23 @@
 
 </head>
 <body>
-    <canvas class="zdog-canvas" width="240" height="240"></canvas>
-    <script src="https://unpkg.com/zdog@1/dist/zdog.dist.min.js"></script>
-    <script src="zdog-demo.js"></script>
+    <script src="http://3Dmol.csb.pitt.edu/build/3Dmol-min.js""></script>
+    <div class="pdb_data"></div>
+    <div id="container-0" class="mol-container" style="width:700px;height:500px"></div>
+    <script>
+        let element = $("#container-0");
+        let config = { backgroundColor: '#fefcf5' };
+        let v = $3Dmol.createViewer( element, config );
+        v.addCylinder({start:{x:0.0,y:2.0,z:0.0},
+                            end:{x:0.0,y:10.0,z:0.0},
+                            radius:0.5,
+                            fromCap:1,
+                            toCap:1,
+                            dashed:true,
+                            color:'teal'});
+        v.zoomTo(); 
+        v.render();
+        v.zoom(1.1, 750);
+    </script>
 </body>
 </html>

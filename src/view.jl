@@ -6,6 +6,7 @@ using BioStructures: ProteinStructure,
                      writepdb,
                      AbstractAtom,
                      Atom
+using StatsBase: mean
 
 include("network_models.jl")
 
@@ -75,7 +76,7 @@ function show_structure(ps::ProteinStructure;
     return view
 end
 # Cα_coords
-function show_correlations(atoms::Array{AbstractAtom,1};mode::Int64=1,show_hinges::Bool=false)::HTML{String}
+function show_correlations(atoms::Array{AbstractAtom,1};mode::Int64=1,show_hinges::Bool=false,additional_style::String="")::HTML{String}
     Cα_coords = get_calpha_coords(atoms)
     gnm = GNM(Cα_coords) 
     corrs = mode_correlations(gnm,mode) |> (x) -> x[:,1]
@@ -93,8 +94,16 @@ function show_correlations(atoms::Array{AbstractAtom,1};mode::Int64=1,show_hinge
     end
     pdb_string = create_pdb_string(atoms)
     global CANVAS_ID += 1
-    structure_view = create_structure_view(pdb_string,style_string)
+    structure_view = create_structure_view(pdb_string,style_string*additional_style)
     return structure_view
+end
+
+function convert_coords(x::Array{Float64,2},i::Int64)::Dict
+    return Dict("x"=>x[1,i],"y"=>x[2,i],"z"=>x[3,i])
+end
+
+function convert_coords(x::Array{Float64,2})::Dict
+    return Dict("x"=>x[1,1],"y"=>x[2,1],"z"=>x[3,1])
 end
 
 function show_network(atoms::Array{AbstractAtom,1};radius::Float64=7.3,show_structure::Bool=false)::HTML{String}
@@ -109,7 +118,7 @@ function show_network(atoms::Array{AbstractAtom,1};radius::Float64=7.3,show_stru
     end
     shape = "let network = v.addShape(1, {color:'red'});"
     N = size(Cα_coords)[2]
-    convert_coords = (x,i) -> Dict("x"=>x[1,i],"y"=>x[2,i],"z"=>x[3,i])
+    # convert_coords = (x,i) -> Dict("x"=>x[1,i],"y"=>x[2,i],"z"=>x[3,i])
     @inbounds for i = 1:N
         @inbounds for j = neighbors[i]
             if i != j
@@ -128,6 +137,8 @@ function show_hinge_plane(atoms::Array{AbstractAtom,1};radius::Float64=7.3,show_
     Cα_coords = get_calpha_coords(atoms)
     gnm = GNM(Cα_coords;radius=radius)
     n_vector = hinge_plane_normal(gnm) # Normal of hinge plane
+    hinges = get_hinge_indices(gnm)
+    hinges_mean = mean(Cα_coords[:,hinges],dims=2)
     if show_structure
         pdb_string = create_pdb_string(atoms)
         model_style = set_style(Dict("cartoon"=>Dict("color"=>"#5e7ad3")))
@@ -135,4 +146,12 @@ function show_hinge_plane(atoms::Array{AbstractAtom,1};radius::Float64=7.3,show_
         pdb_string = ""
         model_style = ""
     end
+    p_start = hinges_mean |> convert_coords |> (x) -> @sprintf("%s",js"$x")
+    p_end = hinges_mean + n_vector.*10 |> convert_coords |> (x) -> @sprintf("%s",js"$x")
+    plane = """let shape = v.addShape({color:'#8c65bd',alpha:0.7});
+    let plane = shape.addCylinder({start:$p_start,end:$p_end,fromCap:1,toCap:1,radius:20.0});"""
+    global CANVAS_ID += 1
+    # show_correlations(atoms::Array{AbstractAtom,1};mode::Int64=1,show_hinges::Bool=false,additional_style::String="")
+    correlation_view = show_correlations(atoms;additional_style=plane)
+    return correlation_view
 end

@@ -15,7 +15,7 @@ export AbstractNetworkModel,
        get_hinge_indices,
        show_structure,
        show_correlations,
-       show_network
-
+       show_network, 
+       show_hinge_plane
 
 end
